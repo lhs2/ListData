@@ -8,19 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var populationList = [Population]()
+    @StateObject private var viewModel = PopulationListViewModel()
     
     var body: some View {
         NavigationView {
             List {
-                ForEach(populationList, id: \.self) { item in
+                ForEach(viewModel.populationList, id: \.self) { item in
                     Text(item.getCellLabel())
                 }
             }
         }.task {
-            PopulationAPI().getData() { populationList in
-                self.populationList = populationList
-            }
+            viewModel.getData()
         }
     }
 }
