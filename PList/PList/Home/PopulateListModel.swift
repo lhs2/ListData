@@ -7,6 +7,11 @@
 
 import Foundation
 
+enum ApiError: String, Error {
+    case genericError
+    case parseError
+}
+
 struct ApiResponse: Codable {
     var data: [Population]
 }

@@ -11,14 +11,24 @@ struct ContentView: View {
     @StateObject private var viewModel = PopulationListViewModel()
     
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(viewModel.populationList, id: \.self) { item in
-                    Text(item.getCellLabel())
+        switch viewModel.loadingState {
+        case .failure(let error):
+            Text("Error: " + error.localizedDescription)
+        
+        case .loading:
+            Text("Loading informations")
+                .onAppear {
+                viewModel.getData()
+            }
+            ProgressView()
+        case .loaded:
+            NavigationView {
+                List {
+                    ForEach(viewModel.populationList, id: \.self) { item in
+                        Text(item.getCellLabel())
+                    }
                 }
             }
-        }.task {
-            viewModel.getData()
         }
     }
 }

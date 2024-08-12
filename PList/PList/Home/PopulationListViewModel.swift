@@ -9,10 +9,17 @@ import Foundation
 
 final class PopulationListViewModel: ObservableObject {
     @Published var populationList = [Population]()
+    @Published var loadingState: LoadingState = .loading
     
     func getData() {
-        PopulationAPI().getData() { populationList in
-            self.populationList = populationList
+        PopulationAPI().getData() { response in
+            switch response {
+            case .success(let populationList):
+                self.populationList = populationList
+                self.loadingState = .loaded
+            case .failure(let error):
+                self.loadingState = LoadingState.failure(error)
+            }
         }
     }
 }
